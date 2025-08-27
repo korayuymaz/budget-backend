@@ -76,14 +76,22 @@ export const resolvers = {
 			});
 		},
 		earnings: async () => {
-			return prisma.earnings.findMany({
+			let data = await prisma.earnings.findMany({
 				orderBy: { date: "desc" },
 			});
+			return data.map((earning) => ({
+				...earning,
+				date: earning.date.toISOString(),
+			}));
 		},
 		expenses: async () => {
-			return prisma.expenses.findMany({
+			let data = await prisma.expenses.findMany({
 				orderBy: { date: "desc" },
 			});
+			return data.map((expense) => ({
+				...expense,
+				date: expense.date.toISOString(),
+			}));
 		},
 	},
 	Mutation: {
@@ -102,6 +110,7 @@ export const resolvers = {
 		createEarnings: async (_: any, { earnings }: any) => {
 			try {
 				const transformedData = transformEarningsData(earnings);
+				console.log(transformedData);
 				return await prisma.earnings.create({
 					data: transformedData,
 				});
