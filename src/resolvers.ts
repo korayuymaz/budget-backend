@@ -75,22 +75,24 @@ export const resolvers = {
 				where: { email },
 			});
 		},
-		earnings: async () => {
+		earnings: async (_: any, { userId }: { userId: string }) => {
 			let data = await prisma.earnings.findMany({
 				orderBy: { date: "desc" },
+				where: { userId },
 			});
 			return data.map((earning) => ({
 				...earning,
-				date: earning.date.toISOString(),
+				date: earning.date.toISOString() || "",
 			}));
 		},
-		expenses: async () => {
+		expenses: async (_: any, { userId }: { userId: string }) => {
 			let data = await prisma.expenses.findMany({
 				orderBy: { date: "desc" },
+				where: { userId },
 			});
 			return data.map((expense) => ({
 				...expense,
-				date: expense.date.toISOString(),
+				date: expense.date.toISOString() || "",
 			}));
 		},
 	},
@@ -110,7 +112,6 @@ export const resolvers = {
 		createEarnings: async (_: any, { earnings }: any) => {
 			try {
 				const transformedData = transformEarningsData(earnings);
-				console.log(transformedData);
 				return await prisma.earnings.create({
 					data: transformedData,
 				});
@@ -143,7 +144,7 @@ export const resolvers = {
 			if (!earnings) throw new Error("Earnings not found");
 
 			await prisma.earnings.delete({ where: { id } });
-			return { success: true, message: "Earnings deleted successfully" };
+			return true;
 		},
 		deleteExpenses: async (_: any, { id }: { id: string }) => {
 			const expenses = await prisma.expenses.findUnique({
@@ -152,7 +153,7 @@ export const resolvers = {
 			if (!expenses) throw new Error("Expenses not found");
 
 			await prisma.expenses.delete({ where: { id } });
-			return { success: true, message: "Expenses deleted successfully" };
+			return true;
 		},
 	},
 };

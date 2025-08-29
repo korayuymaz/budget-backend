@@ -53,8 +53,8 @@ export const typeDefs = gql`
 	}
 
 	type Query {
-		earnings: [Earnings]
-		expenses: [Expenses]
+		earnings(userId: ID!): [Earnings]
+		expenses(userId: ID!): [Expenses]
 		user(email: String!): User
 	}
 
