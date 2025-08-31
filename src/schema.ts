@@ -28,6 +28,21 @@ export const typeDefs = gql`
 		userId: String
 		isFixed: Boolean
 	}
+	type MonthlyBreakdown {
+		month: String
+		earnings: Float
+		expenses: Float
+		net: Float
+		currency: String
+	}
+
+	type Summary {
+		totalEarnings: Float
+		totalExpenses: Float
+		netAmount: Float
+		currency: String
+		monthlyBreakdown: [MonthlyBreakdown]
+	}
 
 	input UserInput {
 		googleId: String
@@ -65,6 +80,7 @@ export const typeDefs = gql`
 		user(email: String!): User
 		earningsMonthly(month: String!, userId: ID!): [Earnings]
 		expensesMonthly(month: String!, userId: ID!): [Expenses]
+		summary(userId: ID!, currency: String!): Summary
 	}
 
 	type Mutation {
