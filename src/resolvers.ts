@@ -155,5 +155,12 @@ export const resolvers = {
 			await prisma.expenses.delete({ where: { id } });
 			return true;
 		},
+
+		updateUser: async (_: any, { user }: any) => {
+			return await prisma.user.update({
+				where: { id: user.id },
+				data: { preferredCurrency: user.preferredCurrency },
+			});
+		},
 	},
 };

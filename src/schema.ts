@@ -21,6 +21,7 @@ export const typeDefs = gql`
 	type Expenses {
 		id: ID!
 		description: String
+		category: String
 		amount: Float
 		currency: String
 		date: String
@@ -32,6 +33,11 @@ export const typeDefs = gql`
 		googleId: String
 		name: String
 		email: String
+		preferredCurrency: String
+	}
+
+	input UpdateUserInput {
+		id: ID!
 		preferredCurrency: String
 	}
 
@@ -47,6 +53,7 @@ export const typeDefs = gql`
 		description: String
 		amount: Float
 		currency: String
+		category: String
 		date: String
 		userId: String
 		isFixed: Boolean
@@ -64,5 +71,6 @@ export const typeDefs = gql`
 		createExpenses(expenses: ExpensesInput!): Expenses
 		deleteEarnings(id: ID!): Boolean
 		deleteExpenses(id: ID!): Boolean
+		updateUser(user: UpdateUserInput!): User!
 	}
 `;
