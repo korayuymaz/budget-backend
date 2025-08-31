@@ -63,6 +63,8 @@ export const typeDefs = gql`
 		earnings(userId: ID!): [Earnings]
 		expenses(userId: ID!): [Expenses]
 		user(email: String!): User
+		earningsMonthly(month: String!, userId: ID!): [Earnings]
+		expensesMonthly(month: String!, userId: ID!): [Expenses]
 	}
 
 	type Mutation {

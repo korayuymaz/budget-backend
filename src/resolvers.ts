@@ -68,6 +68,17 @@ const transformExpensesData = (data: any) => {
 	return transformed;
 };
 
+const getMonthDateRange = (month: string) => {
+	const currentYear = new Date().getFullYear();
+	const monthNumber = parseInt(month, 10);
+
+	const startDate = new Date(currentYear, monthNumber - 1, 1); // First day of month
+	const endDate = new Date(currentYear, monthNumber, 0); // Last day of month
+	endDate.setHours(23, 59, 59, 999); // Set to end of day
+
+	return { startDate, endDate };
+};
+
 export const resolvers = {
 	Query: {
 		user: async (_: any, { email }: { email: string }) => {
@@ -89,6 +100,58 @@ export const resolvers = {
 			let data = await prisma.expenses.findMany({
 				orderBy: { date: "desc" },
 				where: { userId },
+			});
+			return data.map((expense) => ({
+				...expense,
+				date: expense.date.toISOString() || "",
+			}));
+		},
+
+		earningsMonthly: async (
+			_: any,
+			{ month, userId }: { month: string; userId: string }
+		) => {
+			// month should be in format "01", "02", "03", etc.
+			// We'll create a date range for the current year and specified month
+
+			const { startDate, endDate } = getMonthDateRange(month);
+
+			let data = await prisma.earnings.findMany({
+				orderBy: { date: "desc" },
+				where: {
+					date: {
+						gte: startDate,
+						lte: endDate,
+					},
+					userId: {
+						equals: userId,
+					},
+				},
+			});
+			return data.map((earning) => ({
+				...earning,
+				date: earning.date.toISOString() || "",
+			}));
+		},
+		expensesMonthly: async (
+			_: any,
+			{ month, userId }: { month: string; userId: string }
+		) => {
+			// month should be in format "01", "02", "03", etc.
+			// We'll create a date range for the current year and specified month
+			const { startDate, endDate } = getMonthDateRange(month);
+
+			let data = await prisma.expenses.findMany({
+				orderBy: { date: "desc" },
+				where: {
+					date: {
+						gte: startDate,
+						lte: endDate,
+					},
+					userId: {
+						equals: userId,
+					},
+				},
 			});
 			return data.map((expense) => ({
 				...expense,
