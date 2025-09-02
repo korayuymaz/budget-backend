@@ -21,6 +21,7 @@ export const resolvers = {
 			let data = await prisma.earnings.findMany({
 				orderBy: { date: "desc" },
 				where: { userId },
+				take: 10,
 			});
 			return data.map((earning) => ({
 				...earning,
@@ -31,6 +32,7 @@ export const resolvers = {
 			let data = await prisma.expenses.findMany({
 				orderBy: { date: "desc" },
 				where: { userId },
+				take: 10,
 			});
 			return data.map((expense) => ({
 				...expense,
@@ -97,15 +99,15 @@ export const resolvers = {
 			const earnings = await prisma.earnings.findMany({
 				where: {
 					userId,
-					date: { gte: new Date(new Date().getFullYear(), 0, 1) },
 				},
+				orderBy: { date: "desc" },
 			});
 
 			const expenses = await prisma.expenses.findMany({
 				where: {
 					userId,
-					date: { gte: new Date(new Date().getFullYear(), 0, 1) },
 				},
+				orderBy: { date: "desc" },
 			});
 
 			const earningsTotal = earnings.reduce(
@@ -126,6 +128,29 @@ export const resolvers = {
 				netAmount: net,
 				currency: currency,
 				monthlyBreakdown: monthlyBreakdown,
+			};
+		},
+
+		totalBalance: async (_: any, { userId }: { userId: string }) => {
+			const earnings = await prisma.earnings.findMany({
+				where: { userId },
+			});
+			const expenses = await prisma.expenses.findMany({
+				where: { userId },
+			});
+
+			const earningsTotal = earnings.reduce(
+				(acc, earning) => acc + earning.amount,
+				0
+			);
+			const expensesTotal = expenses.reduce(
+				(acc, expense) => acc + expense.amount,
+				0
+			);
+			const totalBalance = earningsTotal - expensesTotal;
+
+			return {
+				totalBalance: totalBalance,
 			};
 		},
 	},

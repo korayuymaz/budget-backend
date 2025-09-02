@@ -81,6 +81,7 @@ export const typeDefs = gql`
 		earningsMonthly(month: String!, userId: ID!): [Earnings]
 		expensesMonthly(month: String!, userId: ID!): [Expenses]
 		summary(userId: ID!, currency: String!): Summary
+		totalBalance(userId: ID!): Float
 	}
 
 	type Mutation {

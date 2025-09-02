@@ -90,8 +90,6 @@ export const getMonthDateRange = (month: string) => {
 };
 
 export const computedMonthlyBreakdown = (earnings: any, expenses: any) => {
-	console.log("earnings", earnings);
-	console.log("expenses", expenses);
 	let monthlyBreakdown: any[] = [];
 	for (const earning of earnings) {
 		const month = months[earning.date.getMonth()];
